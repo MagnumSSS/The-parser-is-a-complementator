@@ -3,7 +3,10 @@
 #include <string.h>
 #include <stdbool.h>
 
-
+void clear_stdin() {
+    int c;
+    while ((c = getchar()) != '\n' && c != EOF);
+}
 
 void print_formula_by_index(const char* filename, size_t index, char* out, size_t out_size) {
     FILE* fp = fopen(filename, "r");

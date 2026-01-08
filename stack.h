@@ -9,6 +9,7 @@ struct stack {
     size_t capacity;
 };
 
+struct maybe_double some_double(double i);
 struct stack stack_create(size_t size);
 void stack_destroy(struct stack* s);
 bool stack_push(struct stack* s, double value);

@@ -4,8 +4,7 @@ LDFLAGS = -lm
 TARGET = engcalc
 
 # Все .c файлы, которые участвуют в сборке
-SRCS = main.c gears.c threads.c utils.c \
-       parser.c stack.c file_io.c solver.c
+SRCS = main.c parser.c stack.c file_io.c solver.c
 
 # Автоматически создаём список .o файлов
 OBJS = $(SRCS:.c=.o)

@@ -19,10 +19,11 @@ struct var {
 // указатель на функции и структура
 typedef void (*command_func_t)(void);
 struct command {
-    const char* keyword;      // псевдоимя: "шестерни", "резьба", "дифференциал"
-    command_func_t handler;   // указатель на функцию
+    const char* keyword;      // псевдоимя функции: pri, var и т.д
+    command_func_t handler;   // указатель на обработчик функции
 };
-
+extern const struct command commands[];
+extern const size_t num_commands;
 
 // Упаковка double
 struct maybe_double {
@@ -30,5 +31,12 @@ struct maybe_double {
     double value;
 };
 extern const struct maybe_double none_double;
+
+// Тип указателя на обработчик команды языка
+typedef bool (*command_handler_t)(
+    const char* line,
+    struct var context[],
+    size_t* context_len
+);
 
 #endif
