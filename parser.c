@@ -11,8 +11,14 @@ bool is_operator(const char* token) {
         strcmp(token, "+") == 0 ||
         strcmp(token, "-") == 0 ||
         strcmp(token, "*") == 0 ||
-        strcmp(token, "/") == 0
-    );
+        strcmp(token, "/") == 0 ||
+				strcmp(token, ">") == 0 ||
+				strcmp(token, "<") == 0 ||
+				strcmp(token, ">=") == 0 ||
+				strcmp(token, "<=") == 0 ||
+				strcmp(token, "==") == 0 ||
+				strcmp(token, "!=") == 0
+		);
 }
 
 bool is_function(const char* token) {
@@ -28,10 +34,16 @@ bool is_function(const char* token) {
 }
 
 int8_t precedence(const char* op) {
-    if (is_function(op)) return 3;
-    if (strcmp(op, "*") == 0 || strcmp(op, "/") == 0) return 2;
-    if (strcmp(op, "+") == 0 || strcmp(op, "-") == 0) return 1;
-    return 0;
+    if (is_function(op)) return 4;
+    if (strcmp(op, "*") == 0 || strcmp(op, "/") == 0) return 3;
+    if (strcmp(op, "+") == 0 || strcmp(op, "-") == 0) return 2;
+		if ( strcmp(op, ">") == 0 ||
+				 strcmp(op, "<") == 0 ||
+				 strcmp(op, ">=") == 0 ||
+				 strcmp(op, "<=") == 0 ||
+				 strcmp(op, "==") == 0 ||
+				 strcmp(op, "!=") == 0 ) return 1;
+		return 0;
 }
 
 // --- tokenize ---
@@ -102,7 +114,22 @@ struct maybe_double evaluate_rpn(char* tokens[], size_t n) {
             else if (strcmp(tokens[i], "/") == 0) {
                 if (b.value == 0) { stack_destroy(&s); return none_double; }
                 res_val = a.value / b.value;
-            } else { stack_destroy(&s); return none_double; }
+            } //else if (strcmp(tokens[i], "%") == 0) {
+								//if (b.value == 0) { stack_destroy(&s); return none_double; }
+								//res_val = fmod(a.value, b.value); }
+						else if (strcmp(tokens[i], "==") == 0) {
+								res_val = (fabs(a.value - b.value) < 1e-9) ? 1.0 : 0.0;
+						} else if (strcmp(tokens[i], "!=") == 0) {
+								res_val = (fabs(a.value - b.value) >= 1e-9) ? 1.0 : 0.0;
+						} else if (strcmp(tokens[i], "<") == 0) {
+								res_val = (a.value < b.value) ? 1.0 : 0.0;
+						} else if (strcmp(tokens[i], ">") == 0) {
+								res_val = (a.value > b.value) ? 1.0 : 0.0;
+						} else if (strcmp(tokens[i], "<=") == 0) {
+								res_val = (a.value <= b.value) ? 1.0 : 0.0;
+						} else if (strcmp(tokens[i], ">=") == 0) {
+								res_val = (a.value >= b.value) ? 1.0 : 0.0; 
+						} else { stack_destroy(&s); return none_double; }
             if (!stack_push(&s, res_val)) { stack_destroy(&s); return none_double; }
         }
         else if (is_function(tokens[i])) {
